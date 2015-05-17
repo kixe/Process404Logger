@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * Process 404 Logger
+ * by kixe
+ *
+ * Logs all requests resulting in http error 404
+ *
+ * 
+ * made by kixe (Christoph Thelen) 20.04.15
+ * Licensed under GNU/GPL v3
+ * 
+ * ProcessWire 2.x 
+ * Copyright (C) 2015 by Ryan Cramer 
+ * Licensed under GNU/GPL v2, see LICENSE.TXT
+ * 
+ * http://processwire.com
+ *
+ */
+
+class Process404Logger extends WireData implements Module {
+
+    public static function getModuleInfo() {
+        return array(
+            'title' => '404 Logger',
+            'summary' => 'Logs all requests resulting in http error 404',
+            'href' => '',
+            'author' => 'kixe',
+            'version' => 100,
+            'autoload' => true,
+            'singular' => true,
+            'icon'     => 'warning'
+        );
+    }
+
+    public function init() {
+        $this->addHookAfter('ProcessPageView::pageNotFound', $this, 'log');
+    }
+
+    /*
+     * 
+     * @return logfile entry.
+     *
+     */
+    public function log($event) {
+
+        $user = $this->wire('user');
+        $eid = $this->wire('config')->http404PageID;
+        $uid = $this->wire('user')->id;
+
+        $page = $event->arguments[0];
+        $request = $event->arguments[1];
+        $ready = $event->arguments[2];
+
+        /*
+            $trashpages = $this->wire('pages')->find("status=trash");
+            foreach($trashpages as $trashpage) {
+                if (trim($request,'/') == substr(strstr($trashpage->name,'_'),1)) {
+                    $page = $trashpage;
+                    break;
+                }
+            }
+        */
+
+        $pid = $page->id;
+        if ($pid) {
+            $request = $page->url;
+            if ($pid == $eid) return; // don't log if error page is called directly
+            if (!$page->template->filenameExists()) $info = "missing template file [$pid]";
+            // if ($page->status>8192) $info = "trashed [$pid]";
+            elseif ($page->status>2048) $info = "unpublished [$pid]";
+            elseif ($page->viewable() == false) $info = "view not permitted [$pid]";
+        }
+        // elseif (wire('pages')->get("id=$trashid,status>8192,include=all")->id) "trashed page found [$trashid]";
+        else $info = 'page doesn\'t exist';
+
+        $filename = $this->wire('log')->getFilename('pagenotfound'); // only lowercase letters to stay compatible with ProcessLogger
+        $log = new FileLog($filename);
+        $log->setDelimeter("\t");
+        $log->save("$uid\t{$request}\t$info");
+    }
+}
