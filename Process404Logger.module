@@ -26,7 +26,7 @@ class Process404Logger extends WireData implements Module {
             'summary' => 'Logs all requests resulting in http error 404',
             'href' => '',
             'author' => 'kixe',
-            'version' => 100,
+            'version' => 101,
             'autoload' => true,
             'singular' => true,
             'icon'     => 'warning'
@@ -42,7 +42,7 @@ class Process404Logger extends WireData implements Module {
      * @return logfile entry.
      *
      */
-    public function log($event) {
+    public function log(HookEvent $event) {
 
         $user = $this->wire('user');
         $eid = $this->wire('config')->http404PageID;
@@ -50,7 +50,6 @@ class Process404Logger extends WireData implements Module {
 
         $page = $event->arguments[0];
         $request = $event->arguments[1];
-        $ready = $event->arguments[2];
 
         /*
             $trashpages = $this->wire('pages')->find("status=trash");
@@ -62,6 +61,7 @@ class Process404Logger extends WireData implements Module {
             }
         */
 
+        $info = "unknown cause";
         $pid = $page->id;
         if ($pid) {
             $request = $page->url;
@@ -77,6 +77,11 @@ class Process404Logger extends WireData implements Module {
         $filename = $this->wire('log')->getFilename('pagenotfound'); // only lowercase letters to stay compatible with ProcessLogger
         $log = new FileLog($filename);
         $log->setDelimeter("\t");
+
+        // to enable after bug in FileLog.php is gone (undefined constant)
+        // todo: make configurable
+        // $log->pruneBytes(200000);
+
         $log->save("$uid\t{$request}\t$info");
     }
 }
