@@ -26,7 +26,7 @@ class Process404Logger extends WireData implements Module {
             'summary' => 'Logs all requests resulting in http error 404',
             'href' => '',
             'author' => 'kixe',
-            'version' => 101,
+            'version' => 102,
             'autoload' => true,
             'singular' => true,
             'icon'     => 'warning'
@@ -78,9 +78,8 @@ class Process404Logger extends WireData implements Module {
         $log = new FileLog($filename);
         $log->setDelimeter("\t");
 
-        // to enable after bug in FileLog.php is gone (undefined constant)
         // todo: make configurable
-        // $log->pruneBytes(200000);
+        $log->pruneBytes(200000);
 
         $log->save("$uid\t{$request}\t$info");
     }
