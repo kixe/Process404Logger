@@ -26,7 +26,7 @@ class Process404Logger extends Process implements ConfigurableModule {
             'summary' => 'Logs all requests resulting in http error 404',
             'href' => '',
             'author' => 'kixe',
-            'version' => 103,
+            'version' => 104,
             'autoload' => true,
             'singular' => true,
             'icon'     => 'warning'
@@ -92,7 +92,9 @@ class Process404Logger extends Process implements ConfigurableModule {
         $log = new FileLog($filename);
         $log->setDelimeter("\t");
 
-        $log->pruneBytes(200000);
+        // $log->pruneBytes(200000);
+        // for backward compatibility
+        method_exists($log,'pruneBytes')?$log->pruneBytes(200000):$log->prune(200000);
 
         // add IP and UA to log entry
         switch ($module->log_ip) {
