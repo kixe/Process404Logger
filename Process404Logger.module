@@ -26,7 +26,7 @@ class Process404Logger extends Process implements ConfigurableModule {
             'summary' => 'Logs all requests resulting in http error 404',
             'href' => '',
             'author' => 'kixe',
-            'version' => 104,
+            'version' => 105,
             'autoload' => true,
             'singular' => true,
             'icon'     => 'warning'
@@ -78,12 +78,13 @@ class Process404Logger extends Process implements ConfigurableModule {
         $info = "unknown cause";
         $pid = $page->id;
         if ($pid) {
-            $request = $page->url;
             if ($pid == $eid) return; // don't log if error page is called directly
             if (!$page->template->filenameExists()) $info = "missing template file [$pid]";
             // if ($page->status>8192) $info = "trashed [$pid]";
-            elseif ($page->status>2048) $info = "unpublished [$pid]";
-            elseif ($page->viewable() == false) $info = "view not permitted [$pid]";
+            else if ($page->status>2048) $info = "unpublished [$pid]";
+            else if ($page->viewable() == false) $info = "view not permitted [$pid]";
+            // if urlsegments are allowed and templatefile throws Wire404Exception()
+            else if ($request != $page->url) $info = "request doesn't equal \$page->url '$page->url' [$pid]";
         }
         // elseif (wire('pages')->get("id=$trashid,status>8192,include=all")->id) "trashed page found [$trashid]";
         else $info = 'page doesn\'t exist';
