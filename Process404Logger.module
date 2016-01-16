@@ -23,10 +23,10 @@ class Process404Logger extends Process implements ConfigurableModule {
     public static function getModuleInfo() {
         return array(
             'title' => '404 Logger',
-            'summary' => 'Logs all requests resulting in http error 404',
+            'summary' => __('Logs all requests resulting in http error 404'),
             'href' => '',
             'author' => 'kixe',
-            'version' => 105,
+            'version' => 106,
             'autoload' => true,
             'singular' => true,
             'icon'     => 'warning'
@@ -137,15 +137,15 @@ class Process404Logger extends Process implements ConfigurableModule {
         $modules = wire('modules');
 
         $f = $modules->get("InputfieldRadios");
-        $f->label = _("Log IP Address");
+        $f->label = __("Log IP Address");
         $f->attr('name', 'log_ip');
         $f->attr('value', $data['log_ip']);
         $f->description = __('Write IP Address in log file. Determine which octets are to be blured (255.255.xxx.xxx)');
         $f->addOption(0,"not");
-        $f->addOption(1,"blur last 3 octets");
-        $f->addOption(2,"blur last 2 octets");
-        $f->addOption(3,"blur last octet");
-        $f->addOption(4,"complete");
+        $f->addOption(1, __("blur last 3 octets"));
+        $f->addOption(2, __("blur last 2 octets"));
+        $f->addOption(3, __("blur last octet"));
+        $f->addOption(4, __("complete"));
         $fields->add($f);
 
         $f = $modules->get('InputfieldCheckbox');
