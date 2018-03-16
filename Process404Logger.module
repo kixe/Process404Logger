@@ -28,7 +28,8 @@ class Process404Logger extends Process implements ConfigurableModule {
             'version' => 107,
             'autoload' => true,
             'singular' => true,
-            'icon'     => 'warning'
+            'icon'     => 'warning',
+            'href' => 'https://github.com/kixe/Process404Logger'
         );
     }
 
