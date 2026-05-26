@@ -1,4 +1,4 @@
-<?php
+<?php namespace ProcessWire;
 
 /**
  * Process 404 Logger
@@ -9,8 +9,10 @@
  * @copyright © 2015 Christoph Thelen
  * @license Licensed under GNU/GPL v3
  * @link https://processwire.com/talk/topic/...
- * @version 1.0.7
+ * @version 1.0.8
+ * 
  * @since 1.0.7 2018/03/16 - added config option to set hook priority
+ * @since 1.0.8 added ProcessWire namespace - 2026-05-26
  *
  * made for ProcessWire 2.x, 3.x, Copyright 2016 by Ryan Cramer
  * https://processwire.com
@@ -25,7 +27,7 @@ class Process404Logger extends Process implements ConfigurableModule {
             'summary' => __('Logs all requests resulting in http error 404'),
             'href' => '',
             'author' => 'kixe',
-            'version' => 107,
+            'version' => 108,
             'autoload' => true,
             'singular' => true,
             'icon'     => 'warning',
